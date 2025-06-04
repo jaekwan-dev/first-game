@@ -8,15 +8,15 @@ console.log('캔버스 크기:', canvas.width, 'x', canvas.height);
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 10,
-    dx: 4,
-    dy: -4
+    radius: 8,
+    dx: 3,
+    dy: -3
 };
 
 const paddle = {
-    width: 100,
-    height: 20,
-    x: canvas.width / 2 - 50,
+    width: 80,
+    height: 15,
+    x: canvas.width / 2 - 40,
     y: canvas.height - 40
 };
 
@@ -24,11 +24,14 @@ console.log('패들 초기 위치:', paddle.x, paddle.y);
 
 let rightPressed = false;
 let leftPressed = false;
+let touchX = 0;
 
 // 이벤트 리스너
 document.addEventListener('keydown', keyDownHandler);
 document.addEventListener('keyup', keyUpHandler);
 document.addEventListener('mousemove', mouseMoveHandler);
+document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+document.addEventListener('touchstart', touchStartHandler, { passive: false });
 
 function keyDownHandler(e) {
     if (e.key === 'Right' || e.key === 'ArrowRight') {
@@ -48,6 +51,21 @@ function keyUpHandler(e) {
 
 function mouseMoveHandler(e) {
     const relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width) {
+        paddle.x = relativeX - paddle.width / 2;
+    }
+}
+
+function touchStartHandler(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    touchX = touch.clientX;
+}
+
+function touchMoveHandler(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const relativeX = touch.clientX - canvas.offsetLeft;
     if (relativeX > 0 && relativeX < canvas.width) {
         paddle.x = relativeX - paddle.width / 2;
     }
@@ -108,9 +126,9 @@ function draw() {
     
     // 패들 이동
     if (rightPressed && paddle.x < canvas.width - paddle.width) {
-        paddle.x += 7;
+        paddle.x += 5;
     } else if (leftPressed && paddle.x > 0) {
-        paddle.x -= 7;
+        paddle.x -= 5;
     }
     
     ball.x += ball.dx;
