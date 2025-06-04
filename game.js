@@ -51,9 +51,8 @@ function keyUpHandler(e) {
 
 function mouseMoveHandler(e) {
     const relativeX = e.clientX - canvas.offsetLeft;
-    if (relativeX > 0 && relativeX < canvas.width) {
-        paddle.x = relativeX - paddle.width / 2;
-    }
+    // 패들이 화면 밖으로 벗어나지 않도록 제한
+    paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, relativeX - paddle.width / 2));
 }
 
 function touchStartHandler(e) {
@@ -66,9 +65,8 @@ function touchMoveHandler(e) {
     e.preventDefault();
     const touch = e.touches[0];
     const relativeX = touch.clientX - canvas.offsetLeft;
-    if (relativeX > 0 && relativeX < canvas.width) {
-        paddle.x = relativeX - paddle.width / 2;
-    }
+    // 패들이 화면 밖으로 벗어나지 않도록 제한
+    paddle.x = Math.max(0, Math.min(canvas.width - paddle.width, relativeX - paddle.width / 2));
 }
 
 // 충돌 감지
@@ -124,11 +122,11 @@ function draw() {
     
     collisionDetection();
     
-    // 패들 이동
+    // 패들 이동 (키보드 컨트롤)
     if (rightPressed && paddle.x < canvas.width - paddle.width) {
-        paddle.x += 5;
+        paddle.x = Math.min(canvas.width - paddle.width, paddle.x + 5);
     } else if (leftPressed && paddle.x > 0) {
-        paddle.x -= 5;
+        paddle.x = Math.max(0, paddle.x - 5);
     }
     
     ball.x += ball.dx;
